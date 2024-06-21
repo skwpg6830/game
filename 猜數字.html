@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜數字遊戲</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #game-container {
+            max-width: 300px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        input[type="number"] {
+            width: 50%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <h1>猜數字遊戲</h1>
+    <p>請猜一個 1 到 100 之間的數字：</p>
+    <input type="number" id="guess-input" min="1" max="100">
+    <button id="guess-button">提交猜測</button>
+    <div id="message"></div>
+</div>
+
+<script>
+    $(document).ready(function() {
+    // 生成一個 1 到 100 之間的隨機數
+    var randomNumber = Math.floor(Math.random() * 100) + 1;
+    console.log("隨機數（為了測試可以在控制台看到）:", randomNumber); // 可選，便於測試
+
+    $('#guess-button').on('click', function() {
+        var guess = parseInt($('#guess-input').val());
+        var message = '';
+
+        if (isNaN(guess) || guess < 1 || guess > 100) {
+            message = '請輸入一個介於 1 到 100 之間的有效數字！';
+        } else if (guess < randomNumber) {
+            message = '太低了！再試一次。';
+        } else if (guess > randomNumber) {
+            message = '太高了！再試一次。';
+        } else {
+            message = '恭喜你，猜對了！';
+        }
+
+        $('#message').text(message);
+    });
+});
+
+</script>
+</body>
+</html>

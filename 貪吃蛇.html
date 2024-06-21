@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貪吃蛇遊戲</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            margin: 50px auto;
+            background-color: #000;
+        }
+        .snake {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #2ecc71;
+        }
+        .food {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<h1>貪吃蛇遊戲</h1>
+<div id="game-container"></div>
+
+<script>
+    $(document).ready(function() {
+    var $gameContainer = $('#game-container');
+    var snake = [{top: 0, left: 0}];
+    var direction = 'right';
+    var speed = 200;
+    var food = {top: 0, left: 0};
+
+    // 生成初始蛇
+    snake.forEach(function(segment) {
+        var $segment = $('<div class="snake"></div>').css({
+            top: segment.top + 'px',
+            left: segment.left + 'px'
+        });
+        $gameContainer.append($segment);
+    });
+
+    // 生成食物
+    function generateFood() {
+        food.top = Math.floor(Math.random() * 30) * 20;
+        food.left = Math.floor(Math.random() * 30) * 20;
+        $('.food').remove();
+        var $food = $('<div class="food"></div>').css({
+            top: food.top + 'px',
+            left: food.left + 'px'
+        });
+        $gameContainer.append($food);
+    }
+
+    generateFood();
+
+    // 監聽鍵盤事件來改變蛇的方向
+    $(document).on('keydown', function(event) {
+        switch(event.key) {
+            case 'ArrowUp':
+                if (direction !== 'down') direction = 'up';
+                break;
+            case 'ArrowDown':
+                if (direction !== 'up') direction = 'down';
+                break;
+            case 'ArrowLeft':
+                if (direction !== 'right') direction = 'left';
+                break;
+            case 'ArrowRight':
+                if (direction !== 'left') direction = 'right';
+                break;
+        }
+    });
+
+    // 遊戲循環
+    function gameLoop() {
+        var newHead = { ...snake[0] };
+
+        switch(direction) {
+            case 'up':
+                newHead.top -= 20;
+                break;
+            case 'down':
+                newHead.top += 20;
+                break;
+            case 'left':
+                newHead.left -= 20;
+                break;
+            case 'right':
+                newHead.left += 20;
+                break;
+        }
+
+        // 檢查蛇是否撞牆或撞到自己
+        if (newHead.top < 0 || newHead.top >= $gameContainer.height() ||
+            newHead.left < 0 || newHead.left >= $gameContainer.width() ||
+            snake.some(segment => segment.top === newHead.top && segment.left === newHead.left)) {
+            alert('遊戲結束！');
+            return;
+        }
+
+        // 更新蛇的位置
+        snake.unshift(newHead);
+
+        // 檢查是否吃到食物
+        if (newHead.top === food.top && newHead.left === food.left) {
+            generateFood();
+        } else {
+            snake.pop();
+        }
+
+        // 更新畫面
+        $('.snake').remove();
+        snake.forEach(function(segment) {
+            var $segment = $('<div class="snake"></div>').css({
+                top: segment.top + 'px',
+                left: segment.left + 'px'
+            });
+            $gameContainer.append($segment);
+        });
+
+        setTimeout(gameLoop, speed);
+    }
+
+    gameLoop();
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記憶翻牌遊戲</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        .card {
+            width: 80px;
+            height: 80px;
+            background-color: #3498db;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .card.matched {
+            background-color: #2ecc71;
+            cursor: default;
+        }
+        .hidden {
+            background-color: #95a5a6;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+
+<h1>記憶翻牌遊戲</h1>
+<div id="game-container">
+    <!-- 卡片會通過 jQuery 動態生成 -->
+</div>
+
+<script>
+    $(document).ready(function() {
+    var cards = [
+        'A', 'A', 'B', 'B', 'C', 'C', 'D', 'D',
+        'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H'
+    ];
+
+    // 隨機打亂卡片
+    cards = cards.sort(() => 0.5 - Math.random());
+
+    // 動態生成卡片
+    for (var i = 0; i < cards.length; i++) {
+        $('#game-container').append('<div class="card hidden" data-card="'+cards[i]+'">'+cards[i]+'</div>');
+    }
+
+    var firstCard = null;
+    var secondCard = null;
+    var lockBoard = false;
+
+    $('.card').on('click', function() {
+        if (lockBoard || $(this).hasClass('matched') || $(this).hasClass('visible')) return;
+
+        $(this).removeClass('hidden').addClass('visible');
+        if (!firstCard) {
+            firstCard = $(this);
+        } else {
+            secondCard = $(this);
+            lockBoard = true;
+
+            if (firstCard.data('card') === secondCard.data('card')) {
+                firstCard.addClass('matched');
+                secondCard.addClass('matched');
+                resetBoard();
+            } else {
+                setTimeout(function() {
+                    firstCard.addClass('hidden').removeClass('visible');
+                    secondCard.addClass('hidden').removeClass('visible');
+                    resetBoard();
+                }, 1000);
+            }
+        }
+    });
+
+    function resetBoard() {
+        [firstCard, secondCard, lockBoard] = [null, null, false];
+    }
+});
+
+</script>
+</body>
+</html>

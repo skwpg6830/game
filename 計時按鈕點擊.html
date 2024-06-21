@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>計時按鈕點擊遊戲</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            margin: 50px auto;
+            padding: 20px;
+            border: 2px solid #3498db;
+            background-color: #fff;
+            width: 300px;
+        }
+        #click-button {
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #timer {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>計時按鈕點擊遊戲</h1>
+<div id="game-container">
+    <button id="click-button">點我!</button>
+    <div id="score">得分: 0</div>
+    <div id="timer">時間: 10秒</div>
+</div>
+
+<script>
+    $(document).ready(function() {
+    var score = 0;
+    var timeLeft = 10;
+    var timer;
+
+    // 按鈕點擊事件
+    $('#click-button').on('click', function() {
+        if (timeLeft > 0) {
+            score++;
+            $('#score').text('得分: ' + score);
+        }
+    });
+
+    // 倒計時函數
+    function countdown() {
+        if (timeLeft > 0) {
+            timeLeft--;
+            $('#timer').text('時間: ' + timeLeft + '秒');
+        } else {
+            clearInterval(timer);
+            $('#click-button').prop('disabled', true);
+            alert('遊戲結束！最終得分: ' + score);
+        }
+    }
+
+    // 開始遊戲
+    function startGame() {
+        score = 0;
+        timeLeft = 10;
+        $('#score').text('得分: ' + score);
+        $('#timer').text('時間: ' + timeLeft + '秒');
+        $('#click-button').prop('disabled', false);
+        timer = setInterval(countdown, 1000);
+    }
+
+    // 初始化遊戲
+    startGame();
+});
+
+</script>
+</body>
+</html>

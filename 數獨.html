@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數獨遊戲</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            width: 450px;
+            margin: 50px auto;
+            display: grid;
+            grid-template-columns: repeat(9, 50px);
+            gap: 5px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #3498db;
+            font-size: 24px;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            font-size: 24px;
+            text-align: center;
+        }
+        .fixed {
+            background-color: #3498db;
+            color: white;
+            pointer-events: none;
+        }
+        .highlight {
+            background-color: #dff0d8;
+        }
+        #check-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>數獨遊戲</h1>
+<div id="game-container"></div>
+<button id="check-button">檢查</button>
+
+<script>
+    $(document).ready(function() {
+    var board = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ];
+
+    function createBoard() {
+        var $gameContainer = $('#game-container');
+        $gameContainer.empty();
+        for (var row = 0; row < 9; row++) {
+            for (var col = 0; col < 9; col++) {
+                var value = board[row][col];
+                var $cell = $('<div class="cell"></div>');
+                if (value !== 0) {
+                    $cell.text(value).addClass('fixed');
+                } else {
+                    $cell.append('<input type="text" maxlength="1">');
+                }
+                $gameContainer.append($cell);
+            }
+        }
+    }
+
+    function checkBoard() {
+        var valid = true;
+        $('.cell').removeClass('highlight');
+        var rows = [];
+        var cols = [];
+        var boxes = [];
+        
+        for (var i = 0; i < 9; i++) {
+            rows.push([]);
+            cols.push([]);
+            boxes.push([]);
+        }
+
+        $('.cell').each(function(index) {
+            var $cell = $(this);
+            var value = $cell.hasClass('fixed') ? $cell.text() : $cell.find('input').val();
+            if (value) {
+                var row = Math.floor(index / 9);
+                var col = index % 9;
+                var box = Math.floor(row / 3) * 3 + Math.floor(col / 3);
+                if (rows[row].includes(value) || cols[col].includes(value) || boxes[box].includes(value)) {
+                    valid = false;
+                    $cell.addClass('highlight');
+                } else {
+                    rows[row].push(value);
+                    cols[col].push(value);
+                    boxes[box].push(value);
+                }
+            }
+        });
+
+        if (valid) {
+            alert('恭喜，你完成了數獨！');
+        } else {
+            alert('數獨有誤，請檢查紅色高亮部分。');
+        }
+    }
+
+    createBoard();
+
+    $('#check-button').on('click', function() {
+        checkBoard();
+    });
+});
+
+</script>
+</body>
+</html>

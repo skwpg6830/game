@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打地鼠遊戲</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        .hole {
+            width: 100px;
+            height: 100px;
+            background-color: #8B4513;
+            border: 2px solid #000;
+            margin: 10px;
+            position: relative;
+        }
+        .mole {
+            width: 80px;
+            height: 80px;
+            background-color: #FFD700;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            border-radius: 50%;
+            display: none;
+        }
+        #score {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>打地鼠遊戲</h1>
+<div id="game-container">
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><div class="mole"></div></div>
+</div>
+<div id="score">得分: 0</div>
+
+<script>
+    $(document).ready(function() {
+    var score = 0;
+    var gameInterval;
+
+    function startGame() {
+        gameInterval = setInterval(function() {
+            $('.mole').hide();
+            var randomHole = Math.floor(Math.random() * $('.hole').length);
+            $('.hole').eq(randomHole).find('.mole').show();
+        }, 1000);
+    }
+
+    function stopGame() {
+        clearInterval(gameInterval);
+    }
+
+    $('.mole').on('click', function() {
+        score++;
+        $('#score').text('得分: ' + score);
+        $(this).hide();
+    });
+
+    startGame();
+});
+
+</script>
+</body>
+</html>
